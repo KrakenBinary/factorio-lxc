@@ -36,9 +36,12 @@ function update_script() {
 start
 build_container
 
-msg_info "Customizing Container"
+msg_info "Updating Container"
 
 $STD apt-get update
+
+msg_info "Adding CRON"
+
 $STD apt-get install -y wget tar jq xz-utils sudo cron pv
 
 msg_info "Customizing Container: Downloading Factorio"
