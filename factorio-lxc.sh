@@ -103,7 +103,7 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF'
 
-$STD systemctl daemon-reload
+$STD systemctl daemon-reload:!git add % && git commit -m "your message" && git push origin main:!git add % && git commit -m "your message" && git push origin main
 $STD systemctl enable --now factorio
 
 $STD bash -c 'cat <<EOF > /opt/factorio/update_factorio.sh
