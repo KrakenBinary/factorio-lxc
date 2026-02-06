@@ -36,17 +36,21 @@ function update_script() {
 start
 build_container
 
-msg_info "Installing Factorio"
+msg_info "Customizing Container"
 
 $STD apt-get update
 $STD apt-get install -y wget tar jq xz-utils sudo cron pv
 
+msg_info "Customizing Container: Downloading Factorio"
+
 $STD wget --show-progress -O /tmp/factorio_headless_x64.tar.xz -L --content-disposition "https://factorio.com/get-download/stable/headless/linux64"
 $STD mkdir -p /opt/factorio
-$STD tar -xJf /tmp/factorio_headless_x64.tar.xz -C /opt --strip-components=1
+$STD tar -xJf /tmp/factorio_headless_x64.tar.xz -C /opt/factorio --strip-components=1
 $STD rm /tmp/factorio_headless_x64.tar.xz
 
-$STD mkdir /opt/factorio/saves /opt/factorio/mods /opt/factorio_backups
+msg_info "Customizing Container: Finalizing"
+
+$STD mkdir -p /opt/factorio/saves /opt/factorio/mods /opt/factorio_backups
 
 $STD groupadd factorio
 $STD useradd -g factorio -d /opt/factorio -s /bin/bash factorio
@@ -128,7 +132,7 @@ DL_FILE="/tmp/factorio_headless_latest.tar.xz"
 wget --show-progress -O "\$DL_FILE" -L --content-disposition "https://factorio.com/get-download/stable/headless/linux64"
 
 echo "Extracting update..."
-tar -xJf "\$DL_FILE" -C "/opt" --strip-components=1 --overwrite
+tar -xJf "\$DL_FILE" -C "/opt/factorio" --strip-components=1 --overwrite
 
 echo "Fixing ownership (quiet)..."
 chown -R factorio:factorio "\$FACTORIO_DIR" >/dev/null 2>&1
@@ -151,7 +155,7 @@ $STD chown factorio:factorio /opt/factorio/update_factorio.sh
 
 $STD bash -c '(crontab -l ; echo "0 3 * * * /opt/factorio/update_factorio.sh >> /var/log/factorio-update.log 2>&1") | crontab -'
 
-msg_ok "Installed Factorio"
+msg_ok "Customized Container"
 
 description
 
