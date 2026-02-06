@@ -41,9 +41,9 @@ msg_info "Installing Factorio"
 $STD apt-get update
 $STD apt-get install -y wget tar jq xz-utils sudo cron pv
 
-$STD wget -O /tmp/factorio_headless_x64.tar.xz "https://factorio.com/get-download/stable/headless/linux64"
+$STD wget --show-progress -O /tmp/factorio_headless_x64.tar.xz -L --content-disposition "https://factorio.com/get-download/stable/headless/linux64"
 $STD mkdir -p /opt/factorio
-$STD tar -xJf /tmp/factorio_headless_x64.tar.xz -C /opt
+$STD tar -xJf /tmp/factorio_headless_x64.tar.xz -C /opt --strip-components=1
 $STD rm /tmp/factorio_headless_x64.tar.xz
 
 $STD mkdir /opt/factorio/saves /opt/factorio/mods /opt/factorio_backups
@@ -125,10 +125,10 @@ tar -cJf - --exclude=temp -C "\$FACTORIO_DIR" . \\
 
 echo "Downloading latest stable headless..."
 DL_FILE="/tmp/factorio_headless_latest.tar.xz"
-wget -q --show-progress -O "\$DL_FILE" "https://factorio.com/get-download/stable/headless/linux64"
+wget --show-progress -O "\$DL_FILE" -L --content-disposition "https://factorio.com/get-download/stable/headless/linux64"
 
 echo "Extracting update..."
-tar -xJf "\$DL_FILE" -C "/opt" --overwrite
+tar -xJf "\$DL_FILE" -C "/opt" --strip-components=1 --overwrite
 
 echo "Fixing ownership (quiet)..."
 chown -R factorio:factorio "\$FACTORIO_DIR" >/dev/null 2>&1
