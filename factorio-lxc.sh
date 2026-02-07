@@ -54,7 +54,7 @@ msg_info "Customizing Container: Finalizing"
 
 $STD mkdir -p /opt/factorio/saves /opt/factorio/mods /opt/factorio_backups
 
-$STD groupadd factorio
+#$STD groupadd factorio
 $STD useradd -g factorio -d /opt/factorio -s /bin/bash factorio
 $STD chown -R factorio:factorio /opt/factorio
 
