@@ -7,11 +7,11 @@ source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxV
 APP="Factorio"
 var_tags="${var_tags:-games}"
 var_cpu="${var_cpu:-2}"
-var_ram="${var_ram:-2048}"
-var_disk="${var_disk:-10}"
+var_ram="${var_ram:-4096}"
+var_disk="${var_disk:-8}"
 var_os="${var_os:-debian}"
 var_version="${var_version:-13}"
-var_unprivileged="${var_unprivileged:-1}"
+#var_unprivileged="${var_unprivileged:-1}"
 
 header_info "$APP"
 variables
@@ -22,12 +22,12 @@ function update_script() {
   header_info
   check_container_storage
   check_container_resources
-  #if [[ ! -d /opt/factorio ]]; then
-  #  msg_error "No ${APP} Installation Found!"
-  #  exit
-  #fi
-  #msg_info "Updating $APP LXC"
-  #$STD /opt/factorio/update_factorio.sh
+  if [[ ! -d /opt/factorio ]]; then
+    msg_error "No ${APP} Installation Found!"
+    exit
+  fi
+  msg_info "Updating $APP LXC"
+  $STD /opt/factorio/update_factorio.sh
   msg_ok "Updated $APP LXC"
   msg_ok "Updated successfully!"
   exit
@@ -45,17 +45,19 @@ $STD apt-get install -y wget tar jq xz-utils sudo cron pv || {
 
 msg_info "Customizing Container: Downloading Factorio"
 
-$STD wget --show-progress -O /tmp/factorio_headless_x64.tar.xz -L --content-disposition "https://factorio.com/get-download/stable/headless/linux64"
-$STD mkdir -p /opt/factorio
-$STD tar -xJf /tmp/factorio_headless_x64.tar.xz -C /opt/factorio --strip-components=1
-$STD rm /tmp/factorio_headless_x64.tar.xz
+$STD wget --show-progress -O /opt/factorio_headless.tar https://factorio.com/get-download/stable/headless/linux64
+#$STD mkdir -p /opt/factorio
+$STD tar -xJf /opt/factorio_headless.tar
+$STD rm /opt/factorio_headless.tar
 
 msg_info "Customizing Container: Finalizing"
 
 $STD mkdir -p /opt/factorio/saves /opt/factorio/mods /opt/factorio_backups
 
-#$STD groupadd factorio
-$STD useradd -g factorio -d /opt/factorio -s /bin/bash factorio
+
+$STD adduser --system --group --home /opt/factorio --no-create-home factorio
+#$STD groupadd factorio 2>/dev/null || true
+#$STD useradd -g factorio -d /opt/factorio -s /bin/bash factorio
 $STD chown -R factorio:factorio /opt/factorio
 
 $STD cp /opt/factorio/data/server-settings.example.json /opt/factorio/data/server-settings.json
