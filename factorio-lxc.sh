@@ -54,10 +54,11 @@ msg_info "Customizing Container: Finalizing"
 
 $STD mkdir -p /opt/factorio/saves /opt/factorio/mods /opt/factorio_backups
 
-
-$STD adduser --system --group --home /opt/factorio --no-create-home factorio
-#$STD groupadd factorio 2>/dev/null || true
+#$STD adduser --system --group --home /opt/factorio --no-create-home factorio
+$STD groupadd factorio
 #$STD useradd -g factorio -d /opt/factorio -s /bin/bash factorio
+$STD useradd factorio
+$STD usermod -aG factorio factorio
 $STD chown -R factorio:factorio /opt/factorio
 
 $STD cp /opt/factorio/data/server-settings.example.json /opt/factorio/data/server-settings.json
