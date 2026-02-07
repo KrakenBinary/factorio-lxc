@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 source <(curl -fsSL https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2025 KrakenBinary
@@ -37,13 +36,12 @@ function update_script() {
 start
 build_container
 
-msg_info "Updating Container"
-
+msg_info "Customizing Container: Installing dependencies"
 $STD apt-get update
-
-msg_info "Adding CRON"
-
-$STD apt-get install -y wget tar jq xz-utils sudo cron pv
+$STD apt-get install -y wget tar jq xz-utils sudo cron pv || {
+  $STD apt-get update --fix-missing
+  $STD apt-get install -y wget tar jq xz-utils sudo cron pv
+}
 
 msg_info "Customizing Container: Downloading Factorio"
 
@@ -103,7 +101,7 @@ RestartSec=10
 WantedBy=multi-user.target
 EOF'
 
-$STD systemctl daemon-reload:!git add % && git commit -m "your message" && git push origin main:!git add % && git commit -m "your message" && git push origin main
+$STD systemctl daemon-reload
 $STD systemctl enable --now factorio
 
 $STD bash -c 'cat <<EOF > /opt/factorio/update_factorio.sh
